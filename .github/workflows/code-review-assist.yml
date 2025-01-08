@@ -24,6 +24,7 @@ jobs:
       # Step 3: Install Python dependencies
       - name: Install dependencies for Python
         run: |
+          cd backend_fastapi
           pip install -r requirements.txt
           pip install flake8 black  # Install linting/formatting tools
 
