@@ -1,0 +1,7 @@
+python:
+  - lint: flake8
+  - format: black
+
+react:
+  - lint: eslint
+  - format: prettier

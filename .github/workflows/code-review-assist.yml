@@ -1,0 +1,32 @@
+name: Code Review Assist
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies for Python
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install dependencies for React
+        run: |
+          cd frontend && npm install
+
+      - name: Run Code Review Assist
+        uses: github/code-review-assist@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
