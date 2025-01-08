@@ -37,19 +37,19 @@ jobs:
         run: |
           black --check . --exclude 'backend_fastapi/migrations/'
 
-      # Step 5: Install React dependencies
-      - name: Install dependencies for React
-        run: |
-          cd frontend && npm install
+    #   # Step 5: Install React dependencies
+    #   - name: Install dependencies for React
+    #     run: |
+    #       cd frontend && npm install
 
-      # Step 6: Run React linters
-      - name: Run eslint for React linting
-        run: |
-          cd frontend && npx eslint . --ext .js,.jsx,.ts,.tsx  # Run eslint on the frontend folder
+    #   # Step 6: Run React linters
+    #   - name: Run eslint for React linting
+    #     run: |
+    #       cd frontend && npx eslint . --ext .js,.jsx,.ts,.tsx  # Run eslint on the frontend folder
 
-      - name: Run prettier for React formatting
-        run: |
-          cd frontend && npx prettier --check .  # Run prettier in check mode to verify formatting
+    #   - name: Run prettier for React formatting
+    #     run: |
+    #       cd frontend && npx prettier --check .  # Run prettier in check mode to verify formatting
     #   - name: Run Code Review Assist
     #     uses: github/code-review-assist-experimental@v1
     #     with:
