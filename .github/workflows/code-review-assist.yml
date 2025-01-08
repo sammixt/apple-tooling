@@ -1,4 +1,4 @@
-name: Code Review Assist
+name: Tooling Review Assist
 
 on:
   pull_request:
@@ -50,3 +50,8 @@ jobs:
       - name: Run prettier for React formatting
         run: |
           cd frontend && npx prettier --check .  # Run prettier in check mode to verify formatting
+    #   - name: Run Code Review Assist
+    #     uses: github/code-review-assist-experimental@v1
+    #     with:
+    #       repo-token: ${{ secrets.GITHUB_TOKEN }}
+    #       review-comment: true  # Ensure the app adds comments to the PR
