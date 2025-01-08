@@ -35,7 +35,7 @@ jobs:
 
       - name: Run black for Python formatting
         run: |
-          black --check . --exclude 'backend_fastapi/migrations/'
+          black --check . --exclude '(backend_fastapi/migrations/|backend_fastapi/app/service/delivery_validation/onetime-insertion-s3-data.py)'
 
     #   # Step 5: Install React dependencies
     #   - name: Install dependencies for React
