@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi_app
+    env_file:
+      - .env
+    ports:
+      - "5000:5000"  # Maps container port 5000 to local port 5000
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # Maps container port 5432 to local port 5433
+
+  # redis:
+  #   image: redis:6
+  #   container_name: redis_server
+  #   ports:
+  #     - "6380:6379"  # Maps container port 6379 to local port 6380
+
+volumes:
+  postgres_data:

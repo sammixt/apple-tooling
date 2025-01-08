@@ -1,0 +1,1666 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Deliverable Schema For SFT",
+  "description": "This JSON Schema defines the deliverable format of a (multi-turn) conversation.\n\nTo check whether your JSON instance passes the validations of JSON Schema, use https://github.com/python-jsonschema/check-jsonschema or JSON Schema validators which supports [Json Schema Specification](https://json-schema.org/specification) of 2020-12.\n\nIf you want to run JSON Schema for each JSON Object in a JSON array, you can use this command:\n\n```\npython deliverable_validator.py ./my_data.json ./this_schema.json\n```\n\n\n",
+  "type": "object",
+  "required": [
+    "deliverable_id",
+    "messages",
+    "notes",
+    "language"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "deliverable_id": "'5dd382b0-094c-11ef-ad22-cec2d971fe07",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Your response should be concise."
+        },
+        {
+          "role": "user",
+          "content": "I'd lke to brainstorm.."
+        },
+        {
+          "role": "assistant",
+          "content": "Sure! Here are five suggestions.."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the suggestions in a table with pros and cons"
+        }
+      ],
+      "notes": {
+        "task_category_list": [
+          "Brainstorming",
+          "Rewriting"
+        ],
+        "annotator_ids": [
+          "C5PX3Y"
+        ]
+      }
+    },
+    {
+      "deliverable_id": "15BCZ5ND_parallel_function_calling_example",
+      "notes": {
+        "task_category_list": [
+          "Tool Usage"
+        ],
+        "annotator_ids": [
+          "aid_123"
+        ]
+      },
+      "messages": [
+        {
+          "role": "user",
+          "contents": [
+            {
+              "text": "What are the similarities between Matthew 7:7 and Mark 3:12?"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "extras_assistant": {
+            "reasoning_comment": "First we return the bible verses Matthew 7:7 and Mark 3:12."
+          },
+          "tool_calls": [
+            {
+              "id": "call_1",
+              "type": "function",
+              "function": {
+                "name": "get_verse",
+                "arguments": "{\"verse\": \"Matthew3:7\", \"length\": 100}"
+              }
+            },
+            {
+              "id": "call_2",
+              "type": "function",
+              "function": {
+                "name": "get_verse",
+                "arguments": "{\"verse\": \"Mark3:12\", \"ratio\": 0.4}"
+              }
+            }
+          ]
+        },
+        {
+          "tool_call_id": "call_1",
+          "role": "tool",
+          "content": "{\"text\": \"Those who continue ..\"}",
+          "name": "get_verse"
+        },
+        {
+          "tool_call_id": "call_2",
+          "role": "tool",
+          "content": "{\"text\": \"When prompts ..\"}",
+          "name": "get_verse"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "extras_assistant": {
+            "reasoning_comment": "Finally, this function checks for the similarities between Matthew3:7 and Mark 3:12"
+          },
+          "tool_calls": [
+            {
+              "id": "call_3",
+              "type": "function",
+              "function": {
+                "name": "get_text_similarity",
+                "arguments": "{\"text1\": \"Those who continue ..\", \"text2\": \"When prompts ..\"}"
+              }
+            }
+          ]
+        },
+        {
+          "tool_call_id": "call_3",
+          "role": "tool",
+          "content": "{\"similarity\": 0.321}",
+          "name": "get_text_similarity"
+        },
+        {
+          "role": "assistant",
+          "content": "The similarity between Matthew3:7 and Mark3:12 is 0.321."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_verse",
+            "description": "Get the text of the verse.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "verse": {
+                  "type": "string",
+                  "description": "The verse ID. Does NOT support ranged searches, such as James 3:1-4.",
+                  "examples": [
+                    "1 Corinthians 1",
+                    "1 Corinthians 1:5",
+                    "James 3"
+                  ]
+                },
+                "length": {
+                  "type": "integer",
+                  "description": "Number of characters to return."
+                },
+                "ratio": {
+                  "type": "number",
+                  "description": "How many percentages of the text to be returned. Taking a float number between 0.0 and 1.0."
+                }
+              },
+              "required": [
+                "verse"
+              ]
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "get_text_similarity",
+            "description": "Get the Cosine Similarity between the given two texts based on TF-IDF of words. This only works for English and Spanish.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "text1": {
+                  "type": "string"
+                },
+                "text2": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "en",
+                    "es"
+                  ],
+                  "default": "en"
+                }
+              },
+              "required": [
+                "text1",
+                "text2"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "deliverable_id": "bcdefaga_code_interpreter_example",
+      "tools": [
+        {
+          "type": "code_interpreter"
+        }
+      ],
+      "notes": {
+        "annotator_ids": [
+          "abcde"
+        ],
+        "task_category_list": [
+          "Coding",
+          "Coding"
+        ],
+        "notebook_id": "bcdefaga_code_interpreter_example"
+      },
+      "messages": [
+        {
+          "role": "user",
+          "contents": [
+            {
+              "text": "Can you write a unit test template?"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "contents": [
+            {
+              "text": "Here's an example of how a unit test might look using Python's `unittest` library:\n"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_1abc23ef",
+              "type": "function",
+              "function": {
+                "name": "code_interpreter_v1",
+                "arguments": "{\"code\": \"# Example usage\\ndef example():\\n    import unittest\\n\\n    class TestMyFunction(unittest.TestCase):\\n        def test_typical_use_case(self):\\n...\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_1abc23ef",
+          "content": "{\"outputs\": []}"
+        },
+        {
+          "role": "assistant",
+          "contents": [
+            {
+              "text": "In this example, we have three tests for ..."
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "contents": [
+            {
+              "text": "A unit test for a function that checks if a given number is prime or not\n"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "contents": [
+            {
+              "text": "Here's an example of a unit test for a function that checks if a given number is prime or not:\n"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_2efg",
+              "type": "function",
+              "function": {
+                "name": "code_interpreter_v1",
+                "arguments": "{\"code\": \"import unittest\\n\\n\\ndef is_prime(n: int) -> bool:\\n    \\\"\\\"\\\"\\n    Checks if n is a prime number.\\n\\n    Args:\\n        n: The number to check\\n\\n    Returns:\\n        True if n is a prime number, False otherwise\\n    \\\"\\\"\\\"\\n    if n < 2:\\n        return False\\n    for i in range(2, int(n**0.5) + 1):\\n        if n % i == 0:\\n            return False\\n    return True\\n\\n\\nclass TestIsPrime(unittest.TestCase):\\n    def test_prime(self):\\n        \\\"\\\"\\\"Test prime numbers\\\"\\\"\\\"\\n        self.assertTrue(is_prime(2))\\n        self.assertTrue(is_prime(3))\\n        self.assertTrue(is_prime(5))\\n        self.assertTrue(is_prime(7))\\n        self.assertTrue(is_prime(11))\\n\\n    def test_not_prime(self):\\n        \\\"\\\"\\\"Test non-prime numbers\\\"\\\"\\\"\\n        self.assertFalse(is_prime(1))\\n        self.assertFalse(is_prime(4))\\n        self.assertFalse(is_prime(6))\\n        self.assertFalse(is_prime(8))\\n        self.assertFalse(is_prime(9))\\n\\n    def test_edge_cases(self):\\n        \\\"\\\"\\\"Test edge cases\\\"\\\"\\\"\\n        self.assertFalse(is_prime(-1))\\n        self.assertFalse(is_prime(0))\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_2efg",
+          "content": "{\"outputs\": []}"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_3ijz",
+              "type": "function",
+              "function": {
+                "name": "code_interpreter_v1",
+                "arguments": "{\"code\": \"if __name__ == \\\"__main__\\\":\\n    unittest.main(argv=[\\\"\\\"], exit=False)\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_3ijz",
+          "content": "{\"outputs\": [{\"output_type\": \"stream\", \"name\": \"stderr\", \"text\": \"...\\n-----------\\nRan 2 tests in 0.004s\\n\\nOK\\n\"}]}"
+        },
+        {
+          "role": "assistant",
+          "contents": [
+            {
+              "text": "In this example, we have a function `is_prime`. We then write two test methods for this function:\n\n ..."
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "contents": [
+            {
+              "text": "read this file, plot the distribution, and generate a processed file."
+            }
+          ],
+          "attachments": [
+            {
+              "file_id": "https://../myfile.csv"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_4mpw",
+              "type": "function",
+              "function": {
+                "name": "code_interpreter_v1",
+                "arguments": "{\"code\": \"import pandas as pd; pd.read_csv('./data/myfile.csv').plot(); with open('./data/out/processed.csv', 'w') as f:\n...\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_3ijz",
+          "content": "{\"outputs\": [{\"output_type\": \"display_data\", \"data\": {\"image/url\": \"https://..data/out/inline/image_call_4mpw_1.png\"}, \"metadata\": {}}, {\"output_type\": \"file\", \"file_id\": \"https://.../data/out/processed.csv\"}]}"
+        },
+        {
+          "role": "assistant",
+          "contents": [
+            {
+              "text": "The above code does that."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "deliverable_id": "01HXYT_web_search_example",
+      "messages": [
+        {
+          "role": "user",
+          "content": "In 2023 which artist won the Aesthetica Art Prize",
+          "extras_user": {
+            "use_search": "Yes"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_tn1q1",
+              "type": "function",
+              "function": {
+                "name": "web_search_v1",
+                "arguments": "{\"query\": \"aesthetica art prize winner 2023\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"results\": [{\"url\": \"https://aestheticamagazine.com/aesthetica-art-prize-2023-winners-announced/\", \"snippets\": [{\"snippet\": \"The 2023 Main Prize-winner is Larry Achiampong for the film Wayfinder, which dissects ideas surrounding class, gender, cross-cultural and digital identity. The piece examines the artist\\u2019s communal and personal heritage \\u2013 in particular, the intersection between popular culture and the residues of colonialism.\"}]}, {\"url\": \"https://aestheticamagazine.com/artists-profiles-2023/\", \"snippets\": [{\"snippet\": \"Selecting works for the Aesthetica Art Prize is an inspirational and enlightening experience. There are so many artists worldwide creating pieces that need to be seen. Below is an image and short synopsis from each 2023 artist.\"}]}, {\"url\": \"https://aestheticamagazine.com/artprize/jury-2023/\", \"snippets\": [{\"snippet\": \"Since 2007, we have worked with thousands of artists, putting their work in front of curators and gallerists from across the world, including those from Tate Modern, Barbican, Guggenheim, Brooklyn Museum, British Journal of Photography, Creative Review, YSP, Frieze, London Art Fair and more.\"}]}]}",
+          "tool_call_id": "call_tn1q1"
+        },
+        {
+          "role": "assistant",
+          "content": "The winner of the Aesthetica Main Prize in 2023 was [Larry Achiampong](https://aestheticamagazine.com/aesthetica-art-prize-2023-winners-announced/) with his film Wayfinder."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "web_search_v1",
+            "description": "Searches the Web using a Web Search Engine.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "Search query"
+                }
+              },
+              "required": [
+                "query"
+              ]
+            }
+          }
+        }
+      ],
+      "notes": {
+        "task_category_list": [
+          "Tool Usage"
+        ],
+        "annotator_ids": [
+          "YRWGTXACJPMQ"
+        ]
+      },
+      "language": {
+        "overall": "en_GB"
+      }
+    }
+  ],
+  "properties": {
+    "deliverable_id": {
+      "type": "string",
+      "description": "Identifier (say UUID) for this data record/unit. This will be used when asking questions on this particular data record, or when listing deliverables affected by a rework (re-processing data records). While using UUIDs being allowed, **this ID MUST be identical before/after each rework to track which data records were corrected**. This ID may be used for preparing billing and invoices. When the data delivery spans over weeks or months, this ID must be unique across those deliverables."
+    },
+    "messages": {
+      "type": "array",
+      "description": "Messages between a user and an assistant.",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "external_message_openai.schema.json#/$defs/MessageCommonProperties"
+          },
+          {
+            "$ref": "#/$defs/MessageBranchDef"
+          }
+        ]
+      }
+    },
+    "tools": {
+      "$ref": "external_subschema_tool_use.schema.json#/$defs/ToolsDef",
+      "description": "An array of functions that are enabled for this conversation. Each array item must be a JSON Schema, as shown in the [OpenAI's format](https://platform.openai.com/docs/assistants/tools/defining-functions).\n\nTo distinguish integers and floats, use 'integer' type for integers, and '[number](https://json-schema.org/understanding-json-schema/reference/numeric#number)' for floating point numbers."
+    },
+    "language": {
+      "$ref": "external_deliverable_notes.schema.json#/$defs/LanguageContext"
+    },
+    "notes": {
+      "$ref": "external_deliverable_notes.schema.json#/$defs/CommonDeliverableNotes"
+    }
+  },
+  "$defs": {
+    "MessageBranchDef": {
+      "type": "object",
+      "description": "An object to capture the branch of multiple conversation flows. Simple SFT data does not need to use this object (this MessageBranch is useful when multiple messages on the same turn are involved). \n\nEach item in 'choices' array represents a possible conversation flow. This object can represent multiple samples of assistant's responses, RLHF (Reinforcement Learning from Human Feedback) workflow, or more.",
+      "required": [
+        "_message_type",
+        "choices"
+      ],
+      "examples": [
+        {
+          "_message_type": "MessageBranch",
+          "choices": [
+            {
+              "response_source": "afm-text-api-001",
+              "hyperparameters": {
+                "temperature": 0.7
+              },
+              "messages": [
+                {
+                  "role": "assistant",
+                  "content": "I cannot answer as an AI assistant."
+                }
+              ]
+            },
+            {
+              "response_source": "afm-text-api-001",
+              "hyperparameters": {
+                "temperature": 1.2
+              },
+              "messages": [
+                {
+                  "role": "assistant",
+                  "content": "Sure, here's a dangerous way to do what you asked.."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "_message_type": {
+          "enum": [
+            "MessageBranch"
+          ],
+          "description": "a marker for data to tell this is a MessageBranch object."
+        },
+        "choices": {
+          "type": "array",
+          "description": "A list of Responses that capture the multi-response workflow (e.g. RLHF). ",
+          "items": {
+            "$ref": "#/$defs/ResponsePropertySet",
+            "description": "If there is `selected_overall` (or legacy/deprecated `rlhf_selected_overall`) as true in the Response's `other_properties`, the response was chosen as better."
+          }
+        },
+        "misc_properties": {
+          "type": "object",
+          "description": "Metadata on this branch, e.g. rankings between multiple responses."
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 1,
+          "deprecated": true,
+          "description": "[Deprecated] Do not supply/use."
+        },
+        "content": {
+          "type": "string",
+          "maxLength": 1,
+          "deprecated": true,
+          "description": "[Deprecated] Do not supply/use."
+        }
+      }
+    },
+    "ResponsePropertySet": {
+      "type": "object",
+      "description": "A Response represents a conceptual bundle of model-generated messages. For example, tool-use may call 3 tools, and the resulting 6+ messages (3 tool-use requests, 3 execution results, and one or more assistant-role message(s)) would be contained and stored in a Response. Response is the unit for RLHF, meaning each Response object will be an option of RLHF and stores single-response ratings (e.g. harmfulness, truthfulness).",
+      "required": [
+        "response_source",
+        "messages"
+      ],
+      "properties": {
+        "response_source": {
+          "type": "string",
+          "description": "The generating system's labels such as model names. Note that even from the same `response_source`, vastly different responses may get returned if `hyperparameters` being different."
+        },
+        "hyperparameters": {
+          "type": "object",
+          "description": "Some conversations were generated with distributed hyperparameters (e.g. random samples from temperature in [0.7, 1.2]), and thus we cannot simply include hyperparameters in a model signature.",
+          "properties": {
+            "temperature": {
+              "type": "number"
+            },
+            "top_p": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          }
+        },
+        "messages": {
+          "type": "array",
+          "description": "Messages that capture the interactions with the model. See MessageCommonProperties.",
+          "items": {
+            "$ref": "external_message_openai.schema.json#/$defs/MessageCommonProperties"
+          }
+        },
+        "other_properties": {
+          "type": "object",
+          "description": "Metadata of this response, e.g. single-response ratings.",
+          "required": [
+            "selected_overall"
+          ],
+          "properties": {
+            "selected_overall": {
+              "type": "boolean",
+              "description": "Indicates whether the response was chosen as best among 1 or n responses. If there's n responses, only one response has selected_overall as true (e.g. if there is a single response, the response is always chosen as selected). The following turn will assume the response contents with selected_overall being true as the preceding conversation history."
+            },
+            "rlhf_selected_overall": {
+              "type": "boolean",
+              "description": "[Deprecated] Use selected_overall.",
+              "deprecated": true
+            },
+            "original_messages": {
+              "type": "array",
+              "description": "If the choice's 'messages' field was edited from the original messages, the pre-edit messages should be stored here.",
+              "items": {
+                "$ref": "external_message_openai.schema.json#/$defs/MessageCommonProperties"
+              }
+            },
+            "original_ratings": {
+              "type": "object",
+              "description": "Storing ratings of the pre-edit response when there's a edit on response contents."
+            },
+            "current_ratings": {
+              "type": "object",
+              "description": "Storing ratings of the post-edit response or without-edit reponse."
+            }
+          }
+        }
+      }
+    },
+    "external_content_custom.schema.json": {
+      "$id": "external_content_custom.schema.json",
+      "title": "Custom Content Schema",
+      "type": "object",
+      "$ref": "#/$defs/ContentMultiMediaItem",
+      "$defs": {
+        "ContentMultiMediaItem": {
+          "description": "The contents to support multi medias.",
+          "examples": [
+            {
+              "text": "This is my text."
+            },
+            {
+              "image": {
+                "url": "https://www.my.org/some.jpg"
+              }
+            },
+            {
+              "video": {
+                "url": "https://www.my.org/some.jpg"
+              }
+            }
+          ],
+          "unevaluatedProperties": false,
+          "oneOf": [
+            {
+              "$ref": "#/$defs/CustomContent__Text"
+            },
+            {
+              "$ref": "#/$defs/CustomContent__ImageUrl"
+            },
+            {
+              "$ref": "#/$defs/CustomContent__Image"
+            },
+            {
+              "$ref": "#/$defs/CustomContent__Video"
+            },
+            {
+              "$ref": "#/$defs/CustomContent__Audio"
+            }
+          ]
+        },
+        "CustomContent__Text": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        "CustomContent__ImageUrl": {
+          "type": "object",
+          "description": "Use 'image' object instead for better extensibility.",
+          "required": [
+            "image_url"
+          ],
+          "properties": {
+            "image_url": {
+              "type": "string"
+            }
+          }
+        },
+        "CustomContent__Image": {
+          "type": "object",
+          "required": [
+            "image"
+          ],
+          "properties": {
+            "image": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "CustomContent__Video": {
+          "type": "object",
+          "required": [
+            "video"
+          ],
+          "properties": {
+            "video": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "CustomContent__Audio": {
+          "type": "object",
+          "required": [
+            "audio"
+          ],
+          "properties": {
+            "audio": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "StructuredOutputs__ResponseFormat": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "json_schema"
+            },
+            "json_schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "strict": {
+                  "type": "boolean"
+                },
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "additionalProperties"
+                  ],
+                  "properties": {
+                    "additionalProperties": {
+                      "const": false
+                    }
+                  },
+                  "description": "The JSON Schema that the assistant's following message must follow. All objects must always have 'additionalProperties' as false."
+                }
+              }
+            }
+          }
+        },
+        "StructuredOutputs__Parsed": {
+          "type": "object",
+          "description": "An object representing the assistant's message body. The schema of this object must be compliant to the JSON Schema passed in the response_format['json_schema']['schema'] field of the preceding user-role message."
+        },
+        "StructuredOutputs__Refusal": {
+          "type": "string",
+          "description": "Populated if the assistant cannot respond e.g. due to safety reasons."
+        }
+      }
+    },
+    "external_subschema_tooluse_function.schema.json": {
+      "$id": "external_subschema_tooluse_function.schema.json",
+      "title": "Tool Use Defintions Schema",
+      "description": "This JSON Schema defines subschemas related to tool-use. See OpenAI's [Function Calling](https://platform.openai.com/docs/guides/function-calling) and [Assistant Tools](https://platform.openai.com/docs/assistants/tools).",
+      "type": "object",
+      "$comment": "A better way to list all $defs defined in this file than anyOf?",
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ToolCallArrayDef"
+        },
+        {
+          "$ref": "#/$defs/ToolCallRequestDef"
+        }
+      ],
+      "$defs": {
+        "ToolCallArrayDef": {
+          "type": "array",
+          "description": "An array of the model's tool execution requests. See OpenAI docs on [Parallel Function Calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling).",
+          "items": {
+            "$ref": "#/$defs/ToolCallRequestDef"
+          }
+        },
+        "ToolCallRequestDef": {
+          "type": "object",
+          "description": "A tool execution request that the asisstant made.",
+          "required": [
+            "id",
+            "type"
+          ],
+          "examples": [
+            {
+              "id": "call_2",
+              "type": "function",
+              "function": {
+                "name": "get_movie_title_details",
+                "arguments": "{\"id\": \"70077552\"}"
+              }
+            }
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/ToolCallID"
+            },
+            "type": {
+              "type": "string",
+              "description": "Specifies the type of the tool. As of 2024-02-08, [OpenAI Assistants API](https://platform.openai.com/docs/assistants/tools) support three tools (`function`, `retrieval`, and `code_interpreter`)",
+              "enum": [
+                "function"
+              ]
+            },
+            "function": {
+              "$ref": "#/$defs/ToolCallRequestFunctionOpenAIDef"
+            }
+          }
+        },
+        "ToolCallRequestFunctionOpenAIDef": {
+          "type": "object",
+          "required": [
+            "name",
+            "arguments"
+          ],
+          "examples": [
+            {
+              "name": "get_current_weather",
+              "arguments": "{\"location\": \"San Francisco, CA\", \"some_property\": 123}"
+            }
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/$defs/ToolName"
+            },
+            "arguments": {
+              "type": "string",
+              "description": "A serialized JSON object string which describes what arguments the assistant requested to pass to the function.",
+              "pattern": "^\\{.*\\}$",
+              "examples": [
+                "{\"location\": \"San Francisco, CA\", \"some_property\": 123}"
+              ]
+            }
+          }
+        },
+        "ToolCallID": {
+          "type": "string",
+          "description": "The ID for the tool execution request. Must start with 'call_' and is followed by random lower/uppercase alphanumeric, e.g. 'call_xcuB' or 'call_1'. When using a tool call ID only unique within the conversation, start the numbering from 1 so that the first-turn's N-th element's ID becomes the most intuitive tool_N, instead of tool_(N-1).",
+          "pattern": "call_[0-9a-zA-Z_-]+",
+          "examples": [
+            "call_1",
+            "call_xdcBABcJos3uuBZEXR1Io6yZ"
+          ]
+        },
+        "ToolName": {
+          "type": "string",
+          "description": "The name (used as an identifier) of the function. (OpenAI limits to 64 chars but temporarily making it as 128 to be more conservative).",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "ToolOption_Function": {
+          "type": "object",
+          "examples": [
+            {
+              "type": "function",
+              "function": {
+                "name": "getCurrentWeather",
+                "description": "Get the weather in location",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "location": {
+                      "type": "string",
+                      "description": "The location name"
+                    }
+                  },
+                  "required": [
+                    "location"
+                  ]
+                }
+              }
+            }
+          ],
+          "required": [
+            "type",
+            "function"
+          ],
+          "properties": {
+            "type": {
+              "const": "function"
+            },
+            "function": {
+              "type": "object",
+              "description": "TODO: define constraints to restrict the subschema to be a JSON Schema.",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "$ref": "#/$defs/ToolName"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "A high-level summary of what the function does, used by the model to decide when and how to call the function."
+                },
+                "parameters": {
+                  "$comment": "As OpenAI OpenAPI [does not strictly constrain](https://github.com/openai/openai-openapi/blob/867fecc5ab6acb93b7e714c90f0d1d384592010a/openapi.yaml#L5552-L5555) this 'parameters' property, we will constrain in a best-effort way.",
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "properties"
+                  ],
+                  "properties": {
+                    "type": {
+                      "const": "object"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object"
+                      }
+                    }
+                  },
+                  "description": "Parameters that the function accepts. If omitted, the function will have an empty parameter list. TODO: assert this to be a JSON Schema following [Chat Completions API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-tools)."
+                }
+              }
+            }
+          }
+        },
+        "ToolCodeInterpreterDef": {
+          "type": "object",
+          "description": "`code_interpreter` is still in [OpenAI beta](https://platform.openai.com/docs/assistants/tools/tools-beta), and this schema does not define much assertions yet.",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "code_interpreter"
+            }
+          }
+        },
+        "Assertions_ToolRoleMessageRequiredProperties": {
+          "type": "object",
+          "description": "Constraints for tool execution result messages.",
+          "if": {
+            "properties": {
+              "role": {
+                "const": "tool"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "tool_call_id",
+              "name"
+            ],
+            "properties": {
+              "tool_call_id": {
+                "$ref": "#/$defs/ToolCallID"
+              },
+              "name": {
+                "$ref": "#/$defs/ToolName"
+              }
+            }
+          }
+        },
+        "Assertions_NullContentMustBeWithAsistantRole": {
+          "description": "Constraints for non-tool message (content must be non-null).",
+          "if": {
+            "properties": {
+              "content": {
+                "const": null
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "tool_calls"
+            ],
+            "properties": {
+              "role": {
+                "const": "assistant"
+              }
+            }
+          }
+        }
+      }
+    },
+    "external_message_openai.schema.json": {
+      "$id": "external_message_openai.schema.json",
+      "title": "OpenAI-style Message Schema",
+      "description": "Documentation on the OpenAI's ChatCompletion API.",
+      "type": "object",
+      "$ref": "#/$defs/MessageOpenAIDef",
+      "$defs": {
+        "MessageOpenAIDef": {
+          "description": "The best-effort OpenAI-compatible Message object (with the exception of internally-extended `extras_` and `contents` properties). This MessageOpenAIDef definition (except the `extras_`) is intended to follow the structures of [OpenAI's ChatCompletion API](https://platform.openai.com/docs/api-reference/chat) requests/responses.",
+          "examples": [
+            {
+              "role": "system",
+              "content": "You are a helpful assistant."
+            },
+            {
+              "role": "user",
+              "content": "Give me three ideas of a fun party.",
+              "extras_user": {
+                "prompt_category": "Brainstorming"
+              }
+            },
+            {
+              "role": "assistant",
+              "content": "How are you?"
+            }
+          ],
+          "unevaluatedProperties": false,
+          "allOf": [
+            {
+              "$ref": "#/$defs/MessageCommonProperties"
+            },
+            {
+              "$ref": "#/$defs/MessageExtrasProperties"
+            },
+            {
+              "$ref": "external_subschema_tooluse_function.schema.json#/$defs/Assertions_ToolRoleMessageRequiredProperties"
+            },
+            {
+              "$comment": "This embedding is hard to read -- a better way?",
+              "$ref": "external_message_extras.schema.json#/$defs/Assertions_ExtrasNotCoexists"
+            },
+            {
+              "$ref": "external_subschema_tooluse_function.schema.json#/$defs/Assertions_NullContentMustBeWithAsistantRole"
+            }
+          ]
+        },
+        "MessageCommonProperties": {
+          "type": "object",
+          "required": [
+            "role"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "content"
+              ]
+            },
+            {
+              "required": [
+                "contents"
+              ]
+            },
+            {
+              "required": [
+                "parsed"
+              ]
+            },
+            {
+              "required": [
+                "refusal"
+              ]
+            }
+          ],
+          "allOf": [
+            {
+              "description": "Assertions_ContentObjectOnlyForToolRole",
+              "if": {
+                "properties": {
+                  "role": {
+                    "not": {
+                      "const": "tool"
+                    }
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "content": {
+                    "not": {
+                      "type": "object"
+                    },
+                    "description": "Non tool-role content cannot be an object."
+                  }
+                }
+              }
+            }
+          ],
+          "examples": [
+            {
+              "role": "assistant",
+              "content": "Hi! How can I assist you today?"
+            }
+          ],
+          "properties": {
+            "role": {
+              "type": "string",
+              "description": "The role of the message author.",
+              "enum": [
+                "assistant",
+                "system",
+                "tool",
+                "user"
+              ]
+            },
+            "content": {
+              "type": [
+                "string",
+                "null",
+                "object"
+              ],
+              "description": "The message content. When `contents` array is non-empty, this field must be an empty string. For tool-use, the execution result is a JSON-serialized string as in this [OpenAI cookbook](https://cookbook.openai.com/examples/how_to_call_functions_with_chat_models).\n\nCaveats: the usage of the NULL value is strictly limited to when OpenAI API uses it because mapping JSON's null to programming languages' null has [a known issue](https://blog.json-everything.net/posts/null-has-value-too/)."
+            },
+            "contents": {
+              "type": "array",
+              "items": {
+                "$ref": "external_content_custom.schema.json#/$defs/ContentMultiMediaItem"
+              }
+            },
+            "attachments": {
+              "$comment": "This counterpart is not in ChatCompletion schema, but exists in some OpenAI docs.",
+              "type": "array",
+              "examples": [
+                [
+                  {
+                    "file_id": "https:/.../data/my_writing.txt"
+                  }
+                ],
+                [
+                  {
+                    "file_id": "s3://my-bucket/../my_writing.png"
+                  }
+                ],
+                [
+                  {
+                    "file_id": "./data/my_file.xlsx"
+                  }
+                ]
+              ],
+              "items": {
+                "type": "object",
+                "properties": {
+                  "file_id": {
+                    "type": "string",
+                    "pattern": "(https://|s3://|\\./data/)",
+                    "description": "The URI to the file such as HTTPS URLs or S3 URIs. In case if the file_id is relative paths, the files must exist under data/ folder and we need instructions on how to set up and reference the relative files."
+                  }
+                }
+              }
+            },
+            "tool_calls": {
+              "$ref": "external_subschema_tooluse_function.schema.json#/$defs/ToolCallArrayDef"
+            },
+            "tool_call_id": {
+              "$ref": "external_subschema_tooluse_function.schema.json#/$defs/ToolCallID"
+            },
+            "name": {
+              "$ref": "external_subschema_tooluse_function.schema.json#/$defs/ToolName"
+            },
+            "response_format": {
+              "$ref": "external_content_custom.schema.json#/$defs/StructuredOutputs__ResponseFormat"
+            },
+            "parsed": {
+              "$ref": "external_content_custom.schema.json#/$defs/StructuredOutputs__Parsed"
+            },
+            "refusal": {
+              "$ref": "external_content_custom.schema.json#/$defs/StructuredOutputs__Refusal"
+            }
+          },
+          "dependentSchemas": {
+            "tool_calls": {
+              "properties": {
+                "content": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        },
+        "MessageExtrasProperties": {
+          "type": "object",
+          "properties": {
+            "_message_type": {
+              "not": {},
+              "description": "`_message_type` property MUST NOT be in `MessageOpenAIDef` to comply with OpenAI-style."
+            },
+            "extras_assistant": {
+              "type": "object",
+              "description": "An optional JSON Object to store internal-only metadata on top of OpenAI-compatible message object. See [message_extras_assistant.schema.json](message_extras_assistant.md)."
+            },
+            "extras_system": {
+              "type": "object",
+              "description": "An optional JSON Object to store internal-only metadata on top of OpenAI-compatible message object. See [message_extras_system.schema.json](message_extras_system.md)."
+            },
+            "extras_user": {
+              "type": "object",
+              "description": "An optional JSON Object to store internal-only metadata on top of OpenAI-compatible message object. See [message_extras_user.schema.json](message_extras_user.md)."
+            }
+          }
+        }
+      }
+    },
+    "external_subschema_tool_use.schema.json": {
+      "$id": "external_subschema_tool_use.schema.json",
+      "title": "Tool Use Defintions Schema",
+      "description": "This JSON Schema defines subschemas related to tool-use. See OpenAI's [Function Calling](https://platform.openai.com/docs/guides/function-calling) and [Assistant Tools](https://platform.openai.com/docs/assistants/tools).",
+      "type": "object",
+      "$comment": "A better way to list all $defs defined in this file than anyOf?",
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ToolsDef"
+        },
+        {
+          "$ref": "#/$defs/ToolChoiceDef"
+        }
+      ],
+      "$defs": {
+        "ToolsDef": {
+          "type": "array",
+          "description": "A set of tools enabled for the model in this conversation. See [OpenAI ChatCompletion API](https://platform.openai.com/docs/api-reference/assistants/createAssistant#chat-create-tool_choice).",
+          "maxLength": 128,
+          "examples": [
+            [
+              {
+                "type": "function",
+                "function": {
+                  "name": "getCurrentWeather",
+                  "description": "Get the weather in location",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "location": {
+                        "type": "string",
+                        "description": "The location name"
+                      }
+                    },
+                    "required": [
+                      "location"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "function",
+                "function": {
+                  "name": "getStandardName",
+                  "description": "Get the standard name of the location",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "location": {
+                        "type": "string",
+                        "description": "The location name"
+                      }
+                    },
+                    "required": [
+                      "location"
+                    ]
+                  }
+                }
+              }
+            ]
+          ],
+          "items": {
+            "$ref": "#/$defs/ToolOptionsDef"
+          }
+        },
+        "ToolOptionsDef": {
+          "type": "object",
+          "description": "Types of tools provided to the assistant.",
+          "oneOf": [
+            {
+              "$ref": "external_subschema_tooluse_function.schema.json#/$defs/ToolOption_Function"
+            },
+            {
+              "type": "object",
+              "description": "`code_interpreter` is still in [OpenAI beta](https://platform.openai.com/docs/assistants/tools/tools-beta), and this schema does not define much assertions yet.",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "code_interpreter"
+                }
+              }
+            }
+          ]
+        },
+        "ToolChoiceDef": {
+          "type": [
+            "string",
+            "object"
+          ],
+          "description": "Controls which function the model calls. See [OpenAI's docs on tool_choice](https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice), especially for usage of 'none' and 'auto'. TODO: constraint object to be a JSON Schema."
+        }
+      }
+    },
+    "external_deliverable_notes.schema.json": {
+      "$id": "external_deliverable_notes.schema.json",
+      "title": "Deliverable-wide Metadata",
+      "description": "",
+      "type": "object",
+      "$defs": {
+        "CommonDeliverableNotes": {
+          "type": "object",
+          "description": "Deliverable-wide supplemental metadata or notes. Data creators may add their own non-listed metadata on their own use for debugging/operational purpose, such as creation timestamps or associated object IDs.",
+          "required": [
+            "task_category_list",
+            "annotator_ids"
+          ],
+          "examples": [
+            {
+              "task_category_list": [
+                "Summarization",
+                "Rewriting"
+              ],
+              "annotator_ids": [
+                "aid_123"
+              ]
+            },
+            {
+              "task_category_list": [
+                {
+                  "category": "Math",
+                  "subcategory": "Algebra"
+                },
+                {
+                  "category": "Math",
+                  "subcategory": "Geometry"
+                }
+              ],
+              "annotator_ids": [
+                "aid_123",
+                "aid_456_who_did_supplemental_followup_work"
+              ]
+            }
+          ],
+          "properties": {
+            "mixed_language": {
+              "type": "object",
+              "description": "Fields describing the set and structure of languages used in a conversation.",
+              "properties": {
+                "repertoire": {
+                  "type": "array",
+                  "description": "The set of languages in the conversation.",
+                  "examples": [
+                    "it_IT",
+                    "en_US"
+                  ],
+                  "items": {
+                    "$ref": "#/$defs/LocalePattern"
+                  }
+                },
+                "turns": {
+                  "type": "object",
+                  "description": "The locale expected for each turn-type within the conversation.",
+                  "properties": {
+                    "context": {
+                      "type": "array",
+                      "description": "The language used for setting the model context in the conversation.",
+                      "examples": [
+                        "it_IT"
+                      ],
+                      "items": {
+                        "$ref": "#/$defs/LocalePattern"
+                      }
+                    },
+                    "prompt": {
+                      "type": "array",
+                      "description": "The language of initial conversation prompt.",
+                      "examples": [
+                        "en_US"
+                      ],
+                      "items": {
+                        "$ref": "#/$defs/LocalePattern"
+                      }
+                    },
+                    "response": {
+                      "type": "array",
+                      "description": "The language used in response to the prompt. In case if the language is not what an assistant should use, use 'Other'.",
+                      "examples": [
+                        "it_IT"
+                      ],
+                      "items": {
+                        "oneOf": [
+                          {
+                            "$ref": "#/$defs/LocalePattern"
+                          },
+                          {
+                            "const": "Other"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "task_category_list": {
+              "type": "array",
+              "minItems": 1,
+              "description": "A list of per-turn task_category. If the user's 1st prompt asks for a summary of a long text and the 2nd-turn prompt asks for rewriting the summary into bullet points, this list will contain ['Summarization', 'Rewriting'] as per-turn task categories.\n\n**To annotate both the task_category and safety_category, annotators **MUST** choose a task category value (e.g. `Brainstorming`) for the task category field, while annotating a separate 'safety_category_list' item value. In other words, non-empty safety_category_list implies the prompt is adversarial, regardless of task_category_list values.\n\nDO NOT CHOOSE `Other` value unless you are absolutely confident that the conversation does not belong to other task values.",
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/TaskCategoryEnum"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "category"
+                    ],
+                    "properties": {
+                      "category": {
+                        "$ref": "#/$defs/TaskCategoryEnum"
+                      },
+                      "subcategory": {
+                        "description": "Granular breakdowns in case the category (e.g. Math) is divided into subcategories (i.e. Algebra)."
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "safety_category_list": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/SafetyAnnotationDef"
+                  },
+                  {
+                    "type": "object",
+                    "description": "Put an empty object as a placeholder if no safety annotation is needed for the turn.",
+                    "maxProperties": 0
+                  }
+                ]
+              },
+              "description": "Per-turn safety annotation objects. This field may not exist if all records in the file are non-adversarial conversations. In case the turn's prompt involves multiple safety risk categories, annotate it as an `safety_categories` array of two string labels after alphabetically sorting the category values (a is the first and z is the last).\n\nIn case if the adversarial prompt exists at later turns, use an empty array as a placeholder for the turn's non-adversarial prompt.\n\nWhen the data file only contains non-safety data (i.e. regular conversations), all data records within the file don't need to have this 'safety_category_list' field.",
+              "examples": [
+                [
+                  {
+                    "toxicity_level": "Harmful",
+                    "safety_categories": [
+                      "Sensitive Topics > Disputed Territories"
+                    ]
+                  },
+                  {
+                    "toxicity_level": "Harmful",
+                    "safety_categories": [
+                      "Sensitive Topics > Controversial Topics"
+                    ]
+                  }
+                ],
+                [
+                  {},
+                  {
+                    "toxicity_level": "Benign",
+                    "safety_categories": [
+                      "Sensitive Topics > Disputed Territories",
+                      "Sensitive Topics > Controversial Topics"
+                    ]
+                  }
+                ]
+              ]
+            },
+            "main_coding_language": {
+              "$ref": "#/$defs/CodingLanguageEnums"
+            },
+            "deliverable_setup": {
+              "type": "object",
+              "description": "Parameters that affect what responses are considered as best/faithful.",
+              "properties": {
+                "knowledge_cutoff_date_utc": {
+                  "type": "string",
+                  "description": "The latest date at which the model knows about. If the cutoff date is 2023-12-31, the assistant does not know anything happened on 2024 such as news or weather.",
+                  "examples": [
+                    "2024-04-01"
+                  ],
+                  "pattern": "^20\\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              }
+            },
+            "annotator_ids": {
+              "type": "array",
+              "minItems": 1,
+              "description": "The anonymized (non-PII) annotator IDs consistent across different data collection projects. The main person's ID who is most responsible for creating this data record must be at the first item of this array.",
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/AnnotatorAttributeDef"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "examples": [
+                [
+                  "aid_123"
+                ],
+                [
+                  "aid_123",
+                  "aid_456_who_did_supplemental_followup_work"
+                ]
+              ]
+            }
+          }
+        },
+        "TaskCategoryEnum": {
+          "type": "string",
+          "description": "Enumlerated values represending the assistant's task.",
+          "enum": [
+            "Brainstorming",
+            "Chatbot",
+            "Classification",
+            "Closed Q&A",
+            "Coding",
+            "Creative Writing",
+            "Extraction",
+            "Analytical Reasoning",
+            "Math",
+            "Open Q&A",
+            "Rewriting",
+            "Structured Data Generation",
+            "Summarization",
+            "Tool Usage",
+            "Other",
+            "Multimodal:Image"
+          ]
+        },
+        "AnnotatorAttributeDef": {
+          "type": "object",
+          "required": [
+            "annotator_id"
+          ],
+          "properties": {
+            "annotator_id": {
+              "type": "string",
+              "description": "The anonymized (non-PII) annotator IDs consistent across different data collection projects. The main person's ID who is most responsible for creating this data record must be at the first item of this array."
+            },
+            "age_bucket": {
+              "type": "string",
+              "description": "The bucketized age of the annotator.",
+              "pattern": "^([0-9]{2}-[0-9]{2}|[0-9]{2,3}\\+)$"
+            },
+            "gender": {
+              "type": "string",
+              "pattern": "^[a-zA-Z -]+$"
+            }
+          }
+        },
+        "SafetyAnnotationDef": {
+          "type": "object",
+          "required": [
+            "safety_categories"
+          ],
+          "properties": {
+            "toxicity_level": {
+              "type": "string",
+              "description": "See our safety guidelines for what `Benign` and `Harmful` means.",
+              "enum": [
+                "Benign",
+                "Harmful"
+              ]
+            },
+            "safety_categories": {
+              "type": "array",
+              "minItems": 1,
+              "description": "The turn's safety category label(s).",
+              "items": {
+                "$ref": "#/$defs/SafetyCategoryEnums"
+              }
+            },
+            "image_safety_categories": {
+              "type": "array",
+              "description": "The turn's safety category label(s) for the images.",
+              "items": {
+                "$ref": "#/$defs/SafetyCategoryEnums"
+              }
+            }
+          }
+        },
+        "SafetyCategoryEnums": {
+          "enum": [
+            "Toxicity, Hatred, Defamation, and Discrimination > Hate Speech, Stereotypes, and Slurs",
+            "Toxicity, Hatred, Defamation, and Discrimination > Discrimination, Marginalization, or Exclusion",
+            "Vulgarity and Offensiveness > Obscenities, Curse Words, Profanity",
+            "Vulgarity and Offensiveness > Body Parts, Bodily Functions, and Emissions",
+            "Restricted, Regulated, and Sensitive Content > Restricted Content",
+            "Restricted, Regulated, and Sensitive Content > Regulated Content",
+            "Restricted, Regulated, and Sensitive Content > Violent Content and Expression",
+            "Restricted, Regulated, and Sensitive Content > Adult Sexual Material",
+            "Sensitive Topics > Child Endangerment",
+            "Sensitive Topics > Self-Harm",
+            "Sensitive Topics > Suicide & Suicidal Behavior (SB)",
+            "Sensitive Topics > Disputed Territories",
+            "Sensitive Topics > Controversial Topics",
+            "Violence, Terrorism, and Extremism > Graphic Violence",
+            "Violence, Terrorism, and Extremism > Interpersonal Violence, Aggression, and Illicit Behaviors and Activities",
+            "Violence, Terrorism, and Extremism > Terrorism and Violent Extremism",
+            "Violence, Terrorism, and Extremism > Weapons and Dangerous Objects",
+            "Violence, Terrorism, and Extremism > Warfare and Armed Conflicts",
+            "Information Hazards > Information Leaks - Individuals",
+            "Information Hazards > Information Leaks - Governments and Institutions",
+            "Malicious Uses > Illegal Activities",
+            "Malicious Uses > Illegal or Fraudulent Goods and Services",
+            "Malicious Uses > Human Exploitation",
+            "Malicious Uses > Unethical or Morally Questionable Actions",
+            "Malicious Uses > Malicious Code Generation",
+            "Malicious Uses > Unsafe Actions",
+            "Deception and Manipulation > Disinformation",
+            "Deception and Manipulation > Inauthentic Practices",
+            "Human-Computer Interaction Risks > Psychological Dangers",
+            "Human-Computer Interaction Risks > Mental Health, Over-reliance Crisis",
+            "Human-Computer Interaction Risks > System Anthropomorphization",
+            "Training Data Extraction > Unintended Content Plagiarism, Piracy, or Unfair Use",
+            "Training Data Extraction > Unintended Model Training Revelations",
+            "Social Implications and Harms > System Style and Design Consequences",
+            "Social Implications and Harms > Broad Societal Impacts and Consequences",
+            "Operational Impacts > Ecosystem Impact",
+            "Operational Impacts > Workforce Impacts",
+            "Operational Impacts > Technology Brand Impacts",
+            "Operational Impacts > Unfavorable User Information Bias and Skewing"
+          ]
+        },
+        "LanguageContext": {
+          "type": "object",
+          "examples": [
+            {
+              "overall": "en_US"
+            },
+            {
+              "overall": "yue_CN"
+            }
+          ],
+          "properties": {
+            "overall": {
+              "description": "The language that the conversation was written in overall. This property allows 3-char segments such as '[yue_CN](https://community.transifex.com/t/adding-cantonese-china/2985/1)' or '[es_419](https://www.wikidata.org/wiki/Q56649449)'.",
+              "$ref": "#/$defs/LocalePattern"
+            }
+          },
+          "required": [
+            "overall"
+          ]
+        },
+        "LocalePattern": {
+          "type": "string",
+          "pattern": "^([a-z]{2}_[A-Z]{2}|es_419|yue_CN|hi_Latn)$"
+        },
+        "CodingLanguageEnums": {
+          "type": "string",
+          "description": "The programming language in which the text is written.",
+          "enum": [
+            "AppleScript",
+            "C",
+            "C++",
+            "C#",
+            "CSS",
+            "Go",
+            "HTML",
+            "Java",
+            "JavaScript",
+            "Kotlin",
+            "Objective-C",
+            "PHP",
+            "Python",
+            "Ruby",
+            "Rust",
+            "Scala",
+            "Shell > Bash",
+            "Shell > Zsh",
+            "Swift",
+            "TypeScript",
+            "Verilog",
+            "Other"
+          ]
+        }
+      }
+    }
+  }
+}

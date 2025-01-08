@@ -1,0 +1,82 @@
+{
+  "name": "@apples3dashboard/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "nx serve",
+    "build": "nx build",
+    "test": "nx test"
+  },
+  "private": true,
+  "dependencies": {
+    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/react": "^2.10.3",
+    "@dataui/crud-request": "^5.3.4",
+    "@react-oauth/google": "^0.12.1",
+    "@reduxjs/toolkit": "^2.3.0",
+    "@sentry/react": "^8.34.0",
+    "@swc/helpers": "~0.5.2",
+    "@tanstack/react-table": "^8.20.5",
+    "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-files": "^3.0.3",
+    "react-hook-form": "^7.53.1",
+    "react-icons": "^5.3.0",
+    "react-json-view": "^1.21.3",
+    "react-loading-overlay-ts": "^2.0.2",
+    "react-redux": "^9.1.2",
+    "react-router-dom": "^6.21.3",
+    "react-use": "^17.5.1",
+    "redux-persist": "^6.0.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.5",
+    "@babel/preset-react": "^7.14.5",
+    "@nx/cypress": "18.0.5",
+    "@nx/eslint": "18.0.5",
+    "@nx/eslint-plugin": "18.0.5",
+    "@nx/js": "18.0.5",
+    "@nx/react": "18.0.5",
+    "@nx/vite": "18.0.5",
+    "@nx/web": "18.0.5",
+    "@nx/workspace": "18.0.5",
+    "@swc-node/register": "1.8.0",
+    "@swc/cli": "~0.1.62",
+    "@swc/core": "~1.3.85",
+    "@testing-library/react": "14.0.0",
+    "@types/node": "18.16.9",
+    "@types/react": "18.2.33",
+    "@types/react-dom": "18.2.14",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/coverage-v8": "^1.0.4",
+    "@vitest/ui": "^1.0.4",
+    "cypress": "^13.0.0",
+    "eslint": "~8.48.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-cypress": "^2.13.4",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "jsdom": "~22.1.0",
+    "nx": "18.0.5",
+    "prettier": "^2.6.2",
+    "typescript": "~5.2.2",
+    "vite": "^5.0.0",
+    "vitest": "^1.0.4"
+  },
+  "overrides": {
+    "react-json-view": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  },
+  "nx": {
+    "includedScripts": []
+  }
+}

@@ -1,0 +1,17 @@
+# Stage 1: Development build with live reload
+FROM golang:1.23-alpine
+
+WORKDIR /app
+
+# Install Air for live reloading (use a specific stable version)
+RUN go install github.com/cosmtrek/air@v1.40.4
+
+# Copy Go modules definition and install dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Expose the app's port
+EXPOSE 8080
+
+# Start Air for live-reloading
+CMD ["air"]

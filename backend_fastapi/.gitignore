@@ -1,0 +1,89 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+.env
+
+# macOS
+.DS_Store
+
+# Database and storage files
+*.sqlite3
+*.db
+
+# Logs and debug files
+*.log
+*.out
+*.err
+
+# System files
+*.swp
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Pytest
+.pytest_cache/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# FastAPI specific
+*.pem
+*.pid
+*.prof
+*.log
+instance/
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
+*.coverage.*
+
+# Python Package build files
+*.egg
+*.egg-info/
+dist/
+build/
+*.wheel
+MANIFEST
+
+# Local development environment files
+*.envrc
+*.local.env
+*secrets.yaml
+docker-compose.override.yml
+
+# Dependencies
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Static and media files
+staticfiles/
+mediafiles/
+
+# S3 related local files
+local_storage/
+
+# Ignore pytest or other test artifacts
+test-results/
+reports/
+
+# Ignore cached SQLAlchemy files
+__pycache__/
+*.cache
+
+# env
+.env
+
+turing-gpt.json
+__.git__
+__.github__/

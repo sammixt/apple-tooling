@@ -1,0 +1,13 @@
+[build]
+  cmd = "go build -o ./tmp/main cmd/server/main.go && chmod +x ./tmp/main"
+  bin = "./tmp/main"
+  include_ext = ["go"]
+  exclude_dir = ["vendor"]
+  delay = 1000 
+
+[dirs]
+  include = ["cmd", "internal", "config"]
+  exclude = ["tmp", "vendor"]
+
+[log]
+  level = "debug"   # Log level can be set to debug, info, etc.
