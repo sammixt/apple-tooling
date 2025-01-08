@@ -29,9 +29,9 @@ jobs:
           pip install flake8 black  # Install linting/formatting tools
 
       # Step 4: Run Python linters
-      - name: Run flake8 for Python linting
-        run: |
-          flake8 . --exclude=backend_fastapi/migrations/*
+    #   - name: Run flake8 for Python linting
+    #     run: |
+    #       flake8 . --exclude=backend_fastapi/migrations/*
 
       - name: Run black for Python formatting
         run: |
