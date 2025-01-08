@@ -31,11 +31,11 @@ jobs:
       # Step 4: Run Python linters
       - name: Run flake8 for Python linting
         run: |
-          flake8 .  # Runs flake8 on the code base
+          flake8 . --exclude=migrations/*
 
       - name: Run black for Python formatting
         run: |
-          black --check .  # Runs black in check mode to verify formatting
+          black --check . --exclude '/(migrations)/'
 
       # Step 5: Install React dependencies
       - name: Install dependencies for React
